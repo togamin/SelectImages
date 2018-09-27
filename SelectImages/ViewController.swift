@@ -9,11 +9,24 @@
 import UIKit
 import ELCImagePickerController
 
-class ViewController: UIViewController,ELCImagePickerControllerDelegate,UICollectionViewDelegate,UICollectionViewDataSource{
-    
+class collectionViewCell:UICollectionViewCell{
+    @IBOutlet weak var collectionViewCellImage: UIImageView!
+}
 
+
+class ViewController: UIViewController,ELCImagePickerControllerDelegate,UICollectionViewDelegate,UICollectionViewDataSource,UICollectionViewDelegateFlowLayout{
+    
+    var pickedImages:[UIImage] = []
+    var MaxNum:Int = 20
+    var margin:CGFloat = 3.0
+    
+    @IBOutlet weak var collectionView: UICollectionView!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        collectionView.delegate = self
+        collectionView.dataSource = self
         
     }
     
@@ -30,7 +43,7 @@ class ViewController: UIViewController,ELCImagePickerControllerDelegate,UICollec
     //写真を選択画面の表示
     func pickImages() {
         var picker = ELCImagePickerController()
-        picker.maximumImagesCount = 5  // 選択する最大枚数
+        picker.maximumImagesCount = MaxNum  // 選択する最大枚数
         picker.imagePickerDelegate = self
         present(picker, animated: true, completion: nil)
     }
@@ -43,12 +56,13 @@ class ViewController: UIViewController,ELCImagePickerControllerDelegate,UICollec
         if (info.count == 0) {
             return
         }
-        var pickedImages = [UIImage]()
+        
         for any in info {
             let dict = any as! NSMutableDictionary
             let image = dict.object(forKey: UIImagePickerControllerOriginalImage) as! UIImage
             pickedImages.append(image)
         }
+        collectionView.reloadData()
         print(pickedImages)
     }
     
@@ -68,11 +82,36 @@ class ViewController: UIViewController,ELCImagePickerControllerDelegate,UICollec
 //CollectionViewに関するコード
 /*-----------------------------------------*/
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        <#code#>
+        return pickedImages.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        <#code#>
+        
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "Cell", for: indexPath) as! collectionViewCell
+        
+        cell.collectionViewCellImage.image = pickedImages[indexPath.row]
+        
+        return cell
+    }
+    
+    //セルのサイズ指定
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        
+        let collectionViewWidth = collectionView.frame.width
+        let cellNum:CGFloat = 3
+        let cellSize = (collectionViewWidth - margin * (cellNum + 2))/cellNum
+        
+        return CGSize(width: cellSize, height: cellSize)
+    }
+    //セル同士の縦の間隔を決める。
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
+        
+        return margin
+    }
+    //セル同士の横の間隔を決める。
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
+        
+        return margin
     }
 
 
