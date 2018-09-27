@@ -1,0 +1,16 @@
+PODS:
+  - ELCImagePickerController (0.2.0)
+
+DEPENDENCIES:
+  - ELCImagePickerController
+
+SPEC REPOS:
+  https://github.com/cocoapods/specs.git:
+    - ELCImagePickerController
+
+SPEC CHECKSUMS:
+  ELCImagePickerController: b1b7084434a7d49f2cfc916bde1f3ba353d38de9
+
+PODFILE CHECKSUM: 2fd7d8c5e2cf39bca6b9394e5fc40d596fc44208
+
+COCOAPODS: 1.5.3
